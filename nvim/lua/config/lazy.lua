@@ -1,3 +1,8 @@
+-- config/lazy.lua
+-- Bootstraps lazy.nvim, the plugin manager, then loads LazyVim and plugins/.
+-- To change: rarely. This is the standard LazyVim bootstrap.
+-- Docs: https://lazy.folke.io
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -15,6 +20,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+  -- No plugin here needs luarocks, so skip the hererocks setup and its health errors.
+  rocks = { enabled = false },
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },

@@ -1,3 +1,8 @@
+-- plugins/dashboard.lua
+-- The start screen: ASCII header and sections, built with snacks.nvim.
+-- To change: edit the header lines or the sections.
+-- Docs: https://github.com/folke/snacks.nvim
+
 -- ~/.config/nvim/lua/plugins/dashboard.lua
 
 return {
