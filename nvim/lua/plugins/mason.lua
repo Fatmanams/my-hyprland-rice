@@ -1,9 +1,6 @@
--- plugins/mason.lua
--- Tools Mason installs for you: the Python debug adapter and the Lua formatter.
--- Language servers, codelldb (C, C++, Rust), and delve (Go) come from the LazyVim
--- extras, so they are not listed here.
--- To change: edit the list below, then run :Mason to check what installed.
--- Docs: https://github.com/mason-org/mason.nvim
+-- mason.lua: extra tools for Mason to install (debugpy, stylua).
+-- Language servers, codelldb (C, C++, Rust) and delve (Go) come from the LazyVim extras, so they are not listed here.
+
 return {
   {
     "mason-org/mason.nvim",

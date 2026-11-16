@@ -1,7 +1,4 @@
--- config/lazy.lua
--- Bootstraps lazy.nvim, the plugin manager, then loads LazyVim and plugins/.
--- To change: rarely. This is the standard LazyVim bootstrap.
--- Docs: https://lazy.folke.io
+-- lazy.lua: bootstraps lazy.nvim, then loads LazyVim and the plugins/ folder.
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then

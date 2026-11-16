@@ -68,7 +68,9 @@ local runners = {
     return vim.fn.shellescape(M.find_python(ctx.dir)) .. " " .. ctx.file
   end,
   lua = function(ctx)
-    return "lua " .. ctx.file
+    -- Plain lua if installed; otherwise Neovim runs the file itself (nvim -l).
+    local interpreter = vim.fn.executable("lua") == 1 and "lua " or "nvim -l "
+    return interpreter .. ctx.file
   end,
   sh = function(ctx)
     return "bash " .. ctx.file
@@ -98,6 +100,9 @@ local runners = {
     return compiled(function(c)
       return ("rustc %s -o %s"):format(c.file, c.out)
     end)(ctx)
+  end,
+  zig = function(ctx)
+    return "zig run " .. ctx.file
   end,
 }
 

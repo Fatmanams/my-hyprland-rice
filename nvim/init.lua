@@ -1,7 +1,4 @@
--- init.lua
--- Entry point. Neovim runs this file first, then loads config/lazy.lua.
--- To change: edit config/ or plugins/ instead. This file rarely needs changes.
--- Docs: https://www.lazyvim.org/installation
+-- init.lua: entry point. Loads config/lazy.lua; everything else lives in config/ and plugins/.
 
 require("config.lazy")
 -- Everything else belongs in files LazyVim loads for you, in the right order:
