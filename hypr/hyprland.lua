@@ -35,7 +35,7 @@ hl.monitor({
 local terminal = "kitty"
 local fileManager = "dolphin"
 local menu = "hyprlauncher"
-
+local editor = "nvim"
 -------------------
 ---- AUTOSTART ----
 -------------------
@@ -48,7 +48,8 @@ local menu = "hyprlauncher"
 hl.on("hyprland.start", function()
     --hl.exec_cmd(terminal)
     hl.exec_cmd("waybar")
-
+    hl.exec_cmd("sleep 1 && awww img /home/fatman/Pictures/Wallpapers/wallpaperflare.com_wallpaper.jpg")
+    hl.exec_cmd("awww-daemon")
     -- hl.exec_cmd("openrgb")
     --hl.exec_cmd("swaybg -i /$HOME/.config/wallpaper/starwars.png -m fill")
 end)
@@ -58,7 +59,7 @@ end)
 -------------------------------
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
-
+hl.env("XDG_CURRENT_DESKTOP", "Hyprland", true)
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 
@@ -116,7 +117,6 @@ hl.config({
 
         shadow = {
             enabled = true,
-            "custom/sep",
             range = 12,
             render_power = 10,
             color = 0xee1a1a1a,
@@ -239,12 +239,12 @@ hl.gesture({
     action = "workspace",
 })
 
--- Example per-device config
+-- Example per-device config (disabled, there's no device with this name)
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Devices/ for more
-hl.device({
-    name = "epic-mouse-v1",
-    sensitivity = -0.5,
-})
+-- hl.device({
+--     name = "epic-mouse-v1",
+--     sensitivity = -0.5,
+-- })
 
 ---------------------
 ---- KEYBINDINGS ----
@@ -304,8 +304,23 @@ hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
-hl.bind("ALT + Z", hl.dsp.exec_cmd([[grim -g "$(slurp)" -t ppm - | satty --filename -]]))
 
+-- screenshots (needs: grim slurp wl-clipboard satty, and ~/Pictures/Screenshots to exist)
+-- region -> annotate in Satty
+hl.bind("ALT + Z", hl.dsp.exec_cmd([[grim -g "$(slurp)" -t ppm - | satty --filename -]]))
+-- region -> clipboard
+hl.bind("Print", hl.dsp.exec_cmd([[grim -g "$(slurp)" - | wl-copy]]))
+-- region -> save to file
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd([[grim -g "$(slurp)" ~/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S).png]]))
+-- region -> annotate in Satty -> save + copy
+hl.bind(
+    "CTRL + Print",
+    hl.dsp.exec_cmd(
+        [[grim -g "$(slurp)" -t ppm - | satty --filename - --output-filename ~/Pictures/Screenshots/satty-%Y%m%d-%H%M%S.png --copy-command wl-copy]]
+    )
+)
+-- wallpaper awwwwwww
+hl.bind("SUPER + SHIFT + W", hl.dsp.exec_cmd("~/.config/hypr/randwall.sh"))
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
@@ -388,7 +403,18 @@ local function compact_workspaces()
     end
 
     -- Force Waybar to refresh its workspace state
-    hl.dsp.exec_cmd("pkill -SIGUSR2 waybar")
+    hl.exec_cmd("pkill -SIGUSR2 waybar")
 end
 
 hl.on("workspace.removed", compact_workspaces)
+-- xdg auto start
+hl.on("hyprland.start", function()
+    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland")
+end)
+hl.on("hyprland.start", function()
+    hl.exec_cmd("systemctl --user start hyprland-session.target")
+end)
+
+hl.on("hyprland.shutdown", function()
+    os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")
+end)
