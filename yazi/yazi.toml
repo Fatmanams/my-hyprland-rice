@@ -1,0 +1,34 @@
+# ~/.config/yazi/yazi.toml
+
+[mgr]
+# Default 3-pane layout: parent / current / preview
+ratio = [1, 4, 3]
+sort_by = "natural"
+sort_dir_first = true
+show_hidden = false   # toggle inside Yazi with "."
+show_symlink = true
+
+[preview]
+# Image, PDF, video and archive previews are built in; they only need the
+# helper tools installed (ffmpeg, poppler, ImageMagick, 7zip), no extra config.
+tab_size = 2
+max_width = 1000          # a bit sharper than the 600 default
+max_height = 1000
+image_filter = "triangle"
+image_quality = 75
+
+[plugin]
+# Preview .conf files as plain text
+prepend_previewers = [{ url = "*.conf", run = "code" }]
+
+[opener]
+nvim = [{ run = 'nvim "$@"', block = true, desc = "Neovim", for = "unix" }]
+
+[open]
+# Text and code open in Neovim; everything else keeps Yazi's defaults
+prepend_rules = [
+    { url = "*.conf", use = "nvim" },
+    { mime = "text/*", use = "nvim" },
+    { mime = "application/json", use = "nvim" },
+    { mime = "inode/x-empty", use = "nvim" },
+]

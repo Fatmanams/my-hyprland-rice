@@ -43,25 +43,29 @@ local editor = "nvim"
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 
 -- Autostart necessary processes (like notifications daemons, status bars, etc.)
--- Or execute your favorite apps at launch like this:
+-- Launched through UWSM so each app runs as a systemd unit in the session.
 --
 hl.on("hyprland.start", function()
-    --hl.exec_cmd(terminal)
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("uwsm app -- waybar")
+    hl.exec_cmd("uwsm app -- awww-daemon")
     hl.exec_cmd("sleep 1 && awww img /home/fatman/Pictures/Wallpapers/wallpaperflare.com_wallpaper.jpg")
-    hl.exec_cmd("awww-daemon")
     -- hl.exec_cmd("openrgb")
-    --hl.exec_cmd("swaybg -i /$HOME/.config/wallpaper/starwars.png -m fill")
+    hl.exec_cmd("systemctl --user start hyprland-session.target")
+end)
+
+hl.on("hyprland.shutdown", function()
+    os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")
 end)
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
 
+-- Environment variables now live in UWSM's env files:
+--   ~/.config/uwsm/env           (XCURSOR_SIZE)
+--   ~/.config/uwsm/env-hyprland  (HYPRCURSOR_SIZE)
+-- UWSM sets XDG_CURRENT_DESKTOP itself.
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
-hl.env("XDG_CURRENT_DESKTOP", "Hyprland", true)
-hl.env("XCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_SIZE", "24")
 
 -----------------------
 ----- PERMISSIONS -----
@@ -256,10 +260,9 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
 local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
-hl.bind(
-    mainMod .. " + M",
-    hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'")
-)
+-- Log out: uwsm stop only works inside a UWSM session.
+-- Outside one, use: hyprctl dispatch exit
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm stop"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
@@ -407,14 +410,5 @@ local function compact_workspaces()
 end
 
 hl.on("workspace.removed", compact_workspaces)
--- xdg auto start
-hl.on("hyprland.start", function()
-    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland")
-end)
-hl.on("hyprland.start", function()
-    hl.exec_cmd("systemctl --user start hyprland-session.target")
-end)
 
-hl.on("hyprland.shutdown", function()
-    os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")
-end)
+-- Session handling (dbus env sync, session target start/stop) is now done by UWSM.
