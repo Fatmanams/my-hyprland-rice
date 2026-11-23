@@ -1,0 +1,7 @@
+# ~/.config/yazi/keymap.toml
+# Yazi's default vim-style keys are kept. Add overrides here when you want them, e.g.:
+#
+# [mgr]
+# prepend_keymap = [
+#   { on = "<C-s>", run = 'shell "$SHELL" --block', desc = "Open a shell here" },
+# ]

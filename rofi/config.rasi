@@ -125,3 +125,5 @@ textbox {
     padding: 8px 16px;
     background-color: #0D0B0A;
 }
+
+@theme "/usr/share/rofi/themes/android_notification.rasi"
