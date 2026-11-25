@@ -21,10 +21,13 @@
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 hl.monitor({
-    output = "",
+    output = "HDMI-A-1",
     mode = "1920x1080@144hz",
     position = "auto",
     scale = "1",
+    bitdepth = 10,
+    cm = "srgb",
+    supports_hdr = -1,
 })
 
 ---------------------
@@ -82,7 +85,7 @@ end)
 -- })
 
 -- hl.permission("/usr/(bin|local/bin)/grim", "screencopy", "allow")
--- hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
+hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
 -- hl.permission("/usr/(bin|local/bin)/hyprpm", "plugin", "allow")
 
 -----------------------
@@ -113,7 +116,7 @@ hl.config({
 
     decoration = {
         rounding = 0,
-        rounding_power = 0,
+        rounding_power = 1.0,
 
         -- Change transparency of focused and unfocused windows
         active_opacity = 1.0,
@@ -122,7 +125,7 @@ hl.config({
         shadow = {
             enabled = true,
             range = 12,
-            render_power = 10,
+            render_power = 4,
             color = 0xee1a1a1a,
         },
 
