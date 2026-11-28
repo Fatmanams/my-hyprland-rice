@@ -35,7 +35,7 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal = "kitty"
+local terminal = "ghostty"
 local fileManager = "dolphin"
 local menu = "hyprlauncher"
 local editor = "nvim"
